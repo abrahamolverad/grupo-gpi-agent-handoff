@@ -24,6 +24,6 @@ El responsable designado por Grupo GPI conserva la política comercial y autoriz
 
 ## Activar el acceso de consulta
 
-Si Grupo GPI decide habilitar una instalación de TheAIGNC, debe acordar y configurar por separado su proceso de acceso, roles, autenticación y alcance. Esa decisión no crea acceso ni asigna permisos desde este repositorio.
+El acceso al portal existente de TheAIGNC se gestiona mediante invitaciones y fuera de este repositorio. Los roles, la autenticación y el alcance se confirman en el portal; este repositorio no crea acceso ni asigna permisos.
 
 El repositorio ejecuta el cálculo y valida la propuesta. Los canales de comunicación, la recepción de documentos y el servicio que atiende mensajes requieren una instalación elegida y operada por Grupo GPI. La ruta local independiente se documenta en `RUNTIME_LOCAL_CLIENTE.md` y no ofrece esos canales.

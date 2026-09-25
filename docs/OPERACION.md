@@ -20,6 +20,6 @@ Edite únicamente el archivo local de parámetros. Conserve una copia aprobada y
 
 ## Acceso al agente
 
-Una instalación de TheAIGNC puede ofrecer acceso a actividad autorizada del agente cuando Grupo GPI la haya contratado y configurado. El administrador asigna el acceso al correo y agente correctos. La autenticación multifactor se aplica sólo si la política de esa instalación lo exige. El alcance de permisos se verifica con una consulta permitida al agente asignado y consultas denegadas a otros agentes y organizaciones.
+El portal existente de TheAIGNC puede mostrar actividad autorizada del agente a usuarios invitados. La autenticación multifactor se aplica sólo si la política del portal lo exige. El alcance de permisos se verifica con una consulta permitida al agente asignado y consultas denegadas a otros agentes y organizaciones.
 
 Para cambiar instrucciones, modelo o canales de atención, use los controles autorizados de la instalación que opera el agente y conserve un registro del cambio. No coloque contraseñas, tokens, pólizas, documentos de clientes ni expedientes en este repositorio. El runtime local descrito en `RUNTIME_LOCAL_CLIENTE.md` no depende de TheAIGNC.

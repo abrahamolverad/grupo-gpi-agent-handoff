@@ -8,6 +8,7 @@ Esta carpeta ofrece una ruta que Grupo GPI puede ejecutar y operar en su propio 
 - Guarda conversaciones, propuestas y el historial de cálculo en `customer_data/gpi-local.sqlite3`. Los PDF se guardan sólo dentro de `customer_data/documents/` con permisos de propietario.
 - Calcula únicamente con `gpi_handoff.quote` y la política comercial local indicada por Grupo GPI.
 - Marca cada resultado como `revision_humana_obligatoria`. No existe una acción para enviar correo, presentar una oferta final, emitir una fianza o cambiar el resultado calculado.
+- El botón **Ver historial local** muestra el registro de la conversación actual desde SQLite en el mismo equipo.
 
 ## Arranque sin red
 

@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
 from urllib import error, request
+from urllib.parse import urlsplit
 
 from .quote import QuoteError, calculate_quote, extract_quote_snapshot, load_policy
 
@@ -42,6 +43,10 @@ def _safe_filename(name: str) -> str:
     return cleaned[:100] or "contrato.pdf"
 
 
+def _normalize_contract_text(value: str) -> str:
+    return re.sub(r"\s+", " ", value).strip().casefold()
+
+
 class LocalStore:
     """A small SQLite audit trail, owned and retained by the customer."""
 
@@ -50,8 +55,11 @@ class LocalStore:
         self.documents_dir = self.data_dir / "documents"
         self.data_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.documents_dir.mkdir(exist_ok=True, mode=0o700)
+        os.chmod(self.data_dir, 0o700)
+        os.chmod(self.documents_dir, 0o700)
         self.db_path = self.data_dir / "gpi-local.sqlite3"
         self._init_db()
+        os.chmod(self.db_path, 0o600)
 
     def _connect(self) -> sqlite3.Connection:
         connection = sqlite3.connect(self.db_path)
@@ -96,6 +104,8 @@ class LocalStore:
         return [{"created_at": row["created_at"], "kind": row["kind"], "payload": json.loads(row["payload"])} for row in rows]
 
     def save_pdf(self, conversation_id: str, filename: str, encoded: str) -> tuple[Path, str]:
+        if not self.exists(conversation_id):
+            raise RuntimeError("Conversación no encontrada")
         try:
             content = base64.b64decode(encoded, validate=True)
         except (ValueError, TypeError) as exc:
@@ -138,9 +148,18 @@ class OpenAIResponsesModel:
     def __post_init__(self) -> None:
         if not self.base_url or not self.api_key or not self.model:
             raise RuntimeError("Configure GPI_MODEL_BASE_URL, GPI_MODEL_API_KEY y GPI_MODEL_NAME para usar el modelo")
-        if not (self.base_url.startswith("https://") or self.base_url.startswith("http://127.0.0.1") or
-                self.base_url.startswith("http://localhost")):
+        try:
+            parsed = urlsplit(self.base_url)
+            host = parsed.hostname
+            port = parsed.port
+        except ValueError as exc:
+            raise RuntimeError("GPI_MODEL_BASE_URL no es una URL válida") from exc
+        if (parsed.scheme not in ("http", "https") or not parsed.netloc or parsed.username is not None or
+                parsed.password is not None or parsed.query or parsed.fragment or parsed.path not in ("", "/")):
+            raise RuntimeError("GPI_MODEL_BASE_URL debe ser una URL base sin usuario, ruta, consulta ni fragmento")
+        if parsed.scheme == "http" and host not in ("localhost", "127.0.0.1"):
             raise RuntimeError("GPI_MODEL_BASE_URL debe usar HTTPS o un proveedor local")
+        object.__setattr__(self, "base_url", f"{parsed.scheme}://{parsed.netloc}")
 
     def propose(self, contract_text: str) -> tuple[str, dict[str, Any]]:
         prompt = (
@@ -223,10 +242,25 @@ class QuoteRuntime:
         self.store.record(conversation_id, "quote_draft", draft)
         return draft
 
+    @staticmethod
+    def _ensure_model_sources_are_anchored(proposal: dict[str, Any], contract_text: str) -> None:
+        normalized_contract = _normalize_contract_text(contract_text)
+        rows = proposal.get("fianzas") if isinstance(proposal, dict) else None
+        if not isinstance(rows, list):
+            raise RuntimeError("La propuesta del modelo no contiene fianzas")
+        for position, row in enumerate(rows, 1):
+            if not isinstance(row, dict):
+                raise RuntimeError(f"Fianza {position} inválida en la propuesta del modelo")
+            source = str(row.get("fuente") or row.get("clausula") or "")
+            if not source or _normalize_contract_text(source) not in normalized_contract:
+                raise RuntimeError(f"La fuente de la fianza {position} no aparece en el contrato almacenado")
+
     def propose_with_model(self, conversation_id: str) -> dict[str, Any]:
         if self.model is None:
             raise RuntimeError("No hay proveedor configurado. Envíe una propuesta estructurada para calcularla localmente.")
-        visible, proposal = self.model.propose(self._contract_text(conversation_id))
+        contract_text = self._contract_text(conversation_id)
+        visible, proposal = self.model.propose(contract_text)
+        self._ensure_model_sources_are_anchored(proposal, contract_text)
         self.store.record(conversation_id, "model_proposal", {"visible": visible, "proposal": proposal})
         return self.submit_proposal(conversation_id, proposal, visible)
 
