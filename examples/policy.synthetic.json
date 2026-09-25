@@ -1,0 +1,8 @@
+{
+  "annual_rate": "0.02",
+  "min_prima": "100.00",
+  "derechos_rate": "0.03",
+  "gastos_tramite": "20.00",
+  "iva_rate": "0.10",
+  "minimum_billable_months": 12
+}

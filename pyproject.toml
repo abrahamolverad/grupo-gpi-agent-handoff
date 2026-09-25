@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grupo-gpi-agent-handoff"
+version = "0.1.0"
+description = "Validación y cálculo determinista para precotizaciones de fianzas"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+gpi-quote = "gpi_handoff.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["gpi_handoff*"]

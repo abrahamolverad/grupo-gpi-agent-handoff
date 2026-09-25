@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+!.env.example
+policy.local.json
+*.db
+*.sqlite*
+*.pdf
+*.docx
+*.log
+*.pem
+*.key
+secrets/
+customer_data/
