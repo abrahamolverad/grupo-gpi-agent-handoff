@@ -24,6 +24,6 @@ El responsable designado por Grupo GPI conserva la política comercial y autoriz
 
 ## Activar el acceso de consulta
 
-El administrador del portal selecciona Grupo GPI y el agente asignado al invitar a cada usuario. El usuario activa su cuenta mediante el correo recibido. Tras entrar, verifica que el historial corresponde al agente asignado. Si necesita cambiar el alcance, solicita al administrador una nueva asignación.
+El acceso al portal existente de TheAIGNC se gestiona mediante invitaciones y fuera de este repositorio. Los roles, la autenticación y el alcance se confirman en el portal; este repositorio no crea acceso ni asigna permisos.
 
-El repositorio ejecuta el cálculo y valida la propuesta. Los canales de comunicación, la recepción de documentos y el servicio que atiende mensajes requieren la instalación que opera el agente.
+El repositorio ejecuta el cálculo y valida la propuesta. La ruta local de `RUNTIME_LOCAL_CLIENTE.md` permite preparar borradores a partir de texto o PDF en un equipo de Grupo GPI. Publicar un chat para clientes y conectar canales externos requiere una instalación y configuración separadas.
