@@ -15,6 +15,7 @@ Desde la carpeta del repositorio:
 ```sh
 python3 -m unittest discover -s tests
 python3 -m gpi_handoff.cli examples/policy.synthetic.json examples/proposal.synthetic.json
+python3 -m gpi_handoff.cli examples/policy.synthetic.json examples/respuesta.synthetic.txt agent-reply
 ```
 
 Los dos archivos de `examples/` contienen cifras y nombres inventados para probar la instalación. Para operar con las condiciones de Grupo GPI, coloque su política comercial en `policy.local.json`. Git ignora ese archivo.
@@ -44,6 +45,7 @@ El programa separa la respuesta visible del bloque estructurado y calcula la cot
 | `agent/AGENTS.md` | Instrucciones de extracción y revisión para el agente |
 | `docs/OPERACION.md` | Flujo de control y revisión |
 | `docs/CONFIGURACION.md` | Campos de la política comercial |
+| `docs/ENTREGA.md` | Puesta en marcha y control de cambios |
 
 ## Control de la operación
 

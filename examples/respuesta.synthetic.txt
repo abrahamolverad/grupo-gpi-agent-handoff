@@ -1,0 +1,5 @@
+Identifiqué una fianza de anticipo en el contrato de ejemplo. Confirme el monto y la vigencia antes de usar esta estimación.
+
+<gpi_quote_snapshot>
+{"contratista":"Empresa de ejemplo","beneficiario":"Entidad de ejemplo","objeto":"Contrato ficticio de obra para una prueba local","fianzas":[{"tipo":"Anticipo","monto":"1000.00","vigencia_meses":12,"fuente":"Cláusula de fianza de anticipo para la prueba local"}]}
+</gpi_quote_snapshot>
