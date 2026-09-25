@@ -2,6 +2,8 @@
 
 Este repositorio contiene el cálculo determinista de precotizaciones de fianzas y una interfaz de línea de comandos para ejecutarlo. Las cifras comerciales se leen de un archivo local administrado por Grupo GPI. El modelo propone los datos del contrato; el programa valida cada fianza y calcula los importes.
 
+Para una ruta de operación independiente y local, vea [Runtime local de Grupo GPI](docs/RUNTIME_LOCAL_CLIENTE.md). Es un runtime nuevo que Grupo GPI ejecuta en su propio equipo; no es una descripción del runtime desplegado de TheAIGNC.
+
 ## Requisitos
 
 - Python 3.11 o posterior.

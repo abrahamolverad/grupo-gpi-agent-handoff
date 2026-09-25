@@ -11,6 +11,7 @@ dependencies = []
 
 [project.scripts]
 gpi-quote = "gpi_handoff.cli:main"
+gpi-local = "gpi_handoff.local_app:main"
 
 [tool.setuptools.packages.find]
 include = ["gpi_handoff*"]

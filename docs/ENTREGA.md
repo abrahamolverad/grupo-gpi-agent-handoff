@@ -24,6 +24,6 @@ El responsable designado por Grupo GPI conserva la política comercial y autoriz
 
 ## Activar el acceso de consulta
 
-El administrador del portal selecciona Grupo GPI y el agente asignado al invitar a cada usuario. El usuario activa su cuenta mediante el correo recibido. Tras entrar, verifica que el historial corresponde al agente asignado. Si necesita cambiar el alcance, solicita al administrador una nueva asignación.
+Si Grupo GPI decide habilitar una instalación de TheAIGNC, debe acordar y configurar por separado su proceso de acceso, roles, autenticación y alcance. Esa decisión no crea acceso ni asigna permisos desde este repositorio.
 
-El repositorio ejecuta el cálculo y valida la propuesta. Los canales de comunicación, la recepción de documentos y el servicio que atiende mensajes requieren la instalación que opera el agente.
+El repositorio ejecuta el cálculo y valida la propuesta. Los canales de comunicación, la recepción de documentos y el servicio que atiende mensajes requieren una instalación elegida y operada por Grupo GPI. La ruta local independiente se documenta en `RUNTIME_LOCAL_CLIENTE.md` y no ofrece esos canales.

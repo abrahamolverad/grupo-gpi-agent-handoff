@@ -20,6 +20,6 @@ Edite únicamente el archivo local de parámetros. Conserve una copia aprobada y
 
 ## Acceso al agente
 
-La cuenta de Grupo GPI en The Agency Portal permite observar la actividad autorizada del agente. El administrador del portal asigna el acceso al correo y agente correctos. El usuario activa su cuenta desde el enlace de invitación y entra con autenticación multifactor. El alcance de sus permisos se verifica con una consulta permitida al agente asignado y consultas denegadas a otros agentes y organizaciones.
+Una instalación de TheAIGNC puede ofrecer acceso a actividad autorizada del agente cuando Grupo GPI la haya contratado y configurado. El administrador asigna el acceso al correo y agente correctos. La autenticación multifactor se aplica sólo si la política de esa instalación lo exige. El alcance de permisos se verifica con una consulta permitida al agente asignado y consultas denegadas a otros agentes y organizaciones.
 
-Para cambiar instrucciones, modelo o canales de atención, use los controles autorizados de la instalación que opera el agente y conserve un registro del cambio. No coloque contraseñas, tokens, pólizas, documentos de clientes ni expedientes en este repositorio.
+Para cambiar instrucciones, modelo o canales de atención, use los controles autorizados de la instalación que opera el agente y conserve un registro del cambio. No coloque contraseñas, tokens, pólizas, documentos de clientes ni expedientes en este repositorio. El runtime local descrito en `RUNTIME_LOCAL_CLIENTE.md` no depende de TheAIGNC.
