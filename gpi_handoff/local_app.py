@@ -9,7 +9,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import urlsplit, urlparse
 
 from .quote import QuoteError
 from .runtime import QuoteRuntime, RuntimeError, model_from_environment
@@ -31,10 +31,33 @@ class App:
             def _json(self, status: int, data: dict[str, Any]) -> None:
                 body = json.dumps(data, ensure_ascii=False).encode("utf-8")
                 self.send_response(status); self.send_header("Content-Type", "application/json; charset=utf-8")
-                self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+                self.send_header("Cache-Control", "no-store"); self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+            def _is_local_authority(self, value: str) -> bool:
+                try:
+                    parsed = urlsplit("//" + value)
+                    return (parsed.username is None and parsed.password is None and not parsed.path and not parsed.query and
+                            not parsed.fragment and parsed.hostname in ("127.0.0.1", "localhost", "::1") and
+                            parsed.port == self.server.server_port)
+                except ValueError:
+                    return False
+            def _request_is_local(self) -> bool:
+                if not self._is_local_authority(self.headers.get("Host", "")):
+                    return False
+                origin = self.headers.get("Origin")
+                if origin is None:
+                    return True
+                try:
+                    parsed = urlsplit(origin)
+                    return (parsed.scheme == "http" and parsed.username is None and parsed.password is None and
+                            parsed.path in ("", "/") and not parsed.query and not parsed.fragment and
+                            self._is_local_authority(parsed.netloc))
+                except ValueError:
+                    return False
             def do_GET(self) -> None:
+                if not self._request_is_local():
+                    self._json(403, {"error": "Host u Origin no autorizado"}); return
                 if self.path == "/":
-                    body = PAGE.encode("utf-8"); self.send_response(200); self.send_header("Content-Type", "text/html; charset=utf-8"); self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+                    body = PAGE.encode("utf-8"); self.send_response(200); self.send_header("Content-Type", "text/html; charset=utf-8"); self.send_header("Cache-Control", "no-store"); self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
                 else:
                     parts = [part for part in urlparse(self.path).path.split("/") if part]
                     if len(parts) == 4 and parts[:2] == ["api", "conversations"] and parts[3] == "history":
@@ -43,6 +66,8 @@ class App:
                     else: self._json(404, {"error": "No encontrado"})
             def do_POST(self) -> None:
                 try:
+                    if not self._request_is_local():
+                        self._json(403, {"error": "Host u Origin no autorizado"}); return
                     if self.headers.get_content_type() != "application/json":
                         raise RuntimeError("La solicitud debe usar Content-Type application/json")
                     content_length = self.headers.get("Content-Length")
@@ -53,6 +78,7 @@ class App:
                     if size < 0: raise RuntimeError("Content-Length no puede ser negativo")
                     if size > 14 * 1024 * 1024: raise RuntimeError("La solicitud supera el límite permitido")
                     data = json.loads(self.rfile.read(size).decode("utf-8"))
+                    if not isinstance(data, dict): raise RuntimeError("El JSON de la solicitud debe ser un objeto")
                     parts = [part for part in urlparse(self.path).path.split("/") if part]
                     if parts == ["api", "conversations"]: result = {"id": app.runtime.store.create_conversation()}
                     elif len(parts) == 4 and parts[:2] == ["api", "conversations"]:

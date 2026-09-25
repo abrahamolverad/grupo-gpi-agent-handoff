@@ -150,7 +150,22 @@ class RuntimeTests(unittest.TestCase):
         connection.request("GET", f"/api/conversations/{conversation_id}/history")
         response = connection.getresponse()
         self.assertEqual(response.status, 200)
+        self.assertEqual(response.getheader("Cache-Control"), "no-store")
         self.assertEqual(json.loads(response.read())["events"][0]["kind"], "contract_text")
+
+    def test_http_rejects_foreign_host_and_origin(self):
+        runtime = QuoteRuntime(self.policy, self.root / "data")
+        server = self._server(runtime)
+        port = server.server_address[1]
+        connection = http.client.HTTPConnection("127.0.0.1", port)
+        connection.request("POST", "/api/conversations", body=b"{}", headers={
+            "Host": f"evil.test:{port}", "Content-Type": "application/json",
+        })
+        response = connection.getresponse()
+        self.assertEqual(response.status, 403); self.assertEqual(response.getheader("Cache-Control"), "no-store"); response.read()
+        connection.request("GET", "/", headers={"Origin": f"http://evil.test:{port}"})
+        response = connection.getresponse()
+        self.assertEqual(response.status, 403); self.assertEqual(response.getheader("Cache-Control"), "no-store"); response.read()
 
     def test_http_rejects_missing_and_negative_content_length(self):
         runtime = QuoteRuntime(self.policy, self.root / "data")
